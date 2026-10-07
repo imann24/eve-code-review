@@ -17,6 +17,7 @@ pnpm dlx vercel link --project <vercel-project-name>
 The root [`vercel.json`](../vercel.json) owns the Services configuration:
 
 - `reviewer` is the only deployable service, rooted at `apps/reviewer`. Its build command runs the existing app build script, which builds all shared packages before `eve build`.
+- `/` serves eve's existing JSON health check at `/eve/v1/health` without a browser redirect. The service route also transforms the request path so eve receives the health endpoint path. This reports agent runtime readiness; it does not test GitHub, Redis, or wiki credentials.
 - Public requests under `/eve/v1` go to the reviewer, including `/eve/v1/github` (Connect webhooks), `/eve/v1/health`, sessions, streams and callbacks. The original request path is preserved; there is no `/reviewer` prefix to add to clients or Connect.
 - `/.well-known/workflow/*` also routes to the reviewer for eve's generated Workflow endpoints. Other public paths have no matching service rewrite.
 - The existing eve OIDC and GitHub webhook authentication still apply to routed requests.

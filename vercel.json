@@ -4,10 +4,22 @@
     "reviewer": {
       "root": "apps/reviewer",
       "framework": "eve",
-      "buildCommand": "pnpm run build"
+      "buildCommand": "pnpm run build",
+      "routes": [
+        {
+          "src": "^/eve/v1/health$",
+          "transforms": [
+            { "type": "request.path", "op": "set", "args": "/eve/v1/health" }
+          ]
+        }
+      ]
     }
   },
   "rewrites": [
+    {
+      "source": "/",
+      "destination": { "service": "reviewer", "path": "/eve/v1/health" }
+    },
     {
       "source": "/eve/v1/:path*",
       "destination": { "service": "reviewer" }
