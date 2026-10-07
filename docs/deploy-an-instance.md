@@ -1,6 +1,6 @@
 # Deploy an instance
 
-One instance reviews one GitHub org (default) or a set of repos in it. Repeat this checklist per instance. Pick the instance ID first: `<org>` for per-org, `<org>-<repo>` for per-repo (lowercase, digits and hyphens).
+One instance reviews repositories belonging to one GitHub organization or personal account, optionally restricted to a list of repo names. Repeat this checklist per instance. Pick an instance ID using lowercase letters, digits and hyphens, for example `imann24-test`.
 
 ## 1. Memory database
 
@@ -8,21 +8,31 @@ Create a new Upstash Redis database for this instance only. Copy its REST URL an
 
 ## 2. Vercel project
 
-Create a Vercel project from this repository and set its root directory to `apps/reviewer`. Then link it locally:
+Create a Vercel project from this repository and set its root directory to the **repository root** (leave the dashboard Root Directory field empty), with Node.js 24. If this project previously used `apps/reviewer` as its root, clear that setting. Run these commands from the repository root:
 
 ```sh
-cd apps/reviewer
-pnpm exec eve link --project <vercel-project-name>
+pnpm dlx vercel link --project <vercel-project-name>
 ```
+
+The root [`vercel.json`](../vercel.json) owns the Services configuration:
+
+- `reviewer` is the only deployable service, rooted at `apps/reviewer`. Its build command runs the existing app build script, which builds all shared packages before `eve build`.
+- Public requests under `/eve/v1` go to the reviewer, including `/eve/v1/github` (Connect webhooks), `/eve/v1/health`, sessions, streams and callbacks. The original request path is preserved; there is no `/reviewer` prefix to add to clients or Connect.
+- `/.well-known/workflow/*` also routes to the reviewer for eve's generated Workflow endpoints. Other public paths have no matching service rewrite.
+- The existing eve OIDC and GitHub webhook authentication still apply to routed requests.
+- `config`, `memory`, and `wiki` are imported workspace libraries with no HTTP entrypoints. They are not separate public or internal services. There are no calls between Vercel services and therefore no service bindings or bound URL variables. Upstash, GitHub/Connect, Linear and Confluence remain external integrations with their existing configuration.
+
+Build/runtime overrides belong to the service, not the top level. See [Vercel Services](https://vercel.com/docs/services) and [routing](https://vercel.com/docs/services/routing).
 
 ## 3. GitHub App
 
-The channel needs a GitHub App created through Vercel Connect. eve's guided setup does this in one step, but it also writes its own `agent/channels/github.ts`, so restore ours afterwards:
+The channel needs a GitHub App created through Vercel Connect. Run the guided setup from the agent directory and select the **same Vercel project** linked at the repository root. It also writes its own `agent/channels/github.ts`, so preserve any local edits and restore this project's channel afterwards. Starting from the repository root:
 
 ```sh
 cd apps/reviewer
 pnpm exec eve add channel/github
 git checkout -- agent/channels/github.ts   # keep this project's channel
+cd ../..
 ```
 
 Note the connector UID the setup printed. If it isn't `github/prbot-<instance id>`, set `PRBOT_GITHUB_CONNECTOR` to it. Set `PRBOT_GITHUB_BOT_NAME` to the App's slug (what people will @mention).
@@ -32,7 +42,7 @@ In the GitHub App settings, make sure it has:
 - **Repository permissions:** Pull requests (read and write), Issues (read and write; PR timeline comments use the Issues API), Contents (read), Metadata (read), Checks (read)
 - **Events:** Pull request, Issue comment, Pull request review comment
 
-Install the App on the org (or only the repos in `PRBOT_GITHUB_REPOS`) from the Vercel Connect dashboard.
+Install the App on the organization or personal account (or only the repos in `PRBOT_GITHUB_REPOS`) from the Vercel Connect dashboard. Confirm its trigger destination is `/eve/v1/github` on this project's deployment.
 
 ## 4. Wiki credentials
 
@@ -42,12 +52,22 @@ Install the App on the org (or only the repos in `PRBOT_GITHUB_REPOS`) from the 
 
 ## 5. Environment and deploy
 
-Copy [`apps/reviewer/.env.example`](../apps/reviewer/.env.example), fill it in, and add every variable to the Vercel project (mark secrets as sensitive). Then:
+Use [`apps/reviewer/.env.example`](../apps/reviewer/.env.example) to configure the Vercel project's Production and Development environment variables (mark secrets as sensitive). Omit unused optional credentials. For a first personal-repo test, use `PRBOT_GITHUB_OWNER=imann24`, a single repo name in `PRBOT_GITHUB_REPOS`, `PRBOT_APPROVE_MODE=never`, and `PRBOT_WIKI_PROVIDER=none`.
+
+Deploy the complete Services project from the repository root:
 
 ```sh
-cd apps/reviewer
-pnpm exec eve deploy
+pnpm dlx vercel deploy --prod
 ```
+
+For local Services testing, also run from the repository root:
+
+```sh
+pnpm build
+pnpm dlx vercel dev
+```
+
+`vercel dev` loads the linked project's development environment and runs its services together. Use `--local` to test without linking, supplying the required credentials yourself. This does not remove eve's sandbox requirements: the default local provider requires a working microsandbox installation, while hosted builds use Vercel Sandbox. A local missing-sandbox error is not a successful deployment check. The direct `pnpm dev` agent workflow still uses `apps/reviewer/.env.local`.
 
 ## 6. Smoke test
 

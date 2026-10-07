@@ -37,13 +37,13 @@ eve-code-review/
 
 ## Running an instance
 
-Each instance is one Vercel project pointing at `apps/reviewer`, configured entirely by environment variables. The full checklist is in [docs/deploy-an-instance.md](docs/deploy-an-instance.md); the short version:
+Each instance is one Vercel project pointing at the repository root, configured entirely by environment variables. The root [`vercel.json`](vercel.json) uses Vercel Services with one deployable service, `reviewer`, rooted at `apps/reviewer`. `packages/config`, `packages/memory`, and `packages/wiki` are shared libraries built into that service, not HTTP services, so they need no service bindings. The full checklist is in [docs/deploy-an-instance.md](docs/deploy-an-instance.md); the short version:
 
 1. Create an Upstash Redis database for the instance.
-2. Create a Vercel project from this repo with root directory `apps/reviewer`, and link it with `eve link`.
+2. Create a Vercel project from this repo with the repository root as its root directory, and run `pnpm dlx vercel link` there.
 3. Create the instance's GitHub App through Vercel Connect and install it on the org or repos.
 4. Create a read-only Linear API key (or an Atlassian API token).
-5. Set the env vars from [`apps/reviewer/.env.example`](apps/reviewer/.env.example) and run `eve deploy`.
+5. Set the env vars from [`apps/reviewer/.env.example`](apps/reviewer/.env.example) and run `pnpm dlx vercel deploy --prod` from the repository root.
 
 ## Developing
 
@@ -55,6 +55,8 @@ pnpm test        # unit tests for config, memory policy and wiki plugins
 pnpm typecheck   # builds the packages, then typechecks everything including the agent
 pnpm dev         # eve dev for the reviewer (needs a .env.local in apps/reviewer)
 ```
+
+To test the Vercel Services routing locally, run `pnpm dlx vercel dev` from the repository root. See the deployment guide for credentials and local sandbox requirements.
 
 eve is pinned to **0.71.3**: eve 0.72.0 and 0.72.1 fail to build any agent that mounts `@github-tools/eve-extension` ("Selected module binding has no compile or runtime usage"). Unpin once that's fixed upstream.
 

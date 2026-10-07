@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "reviewer": {
+      "root": "apps/reviewer",
+      "framework": "eve",
+      "buildCommand": "pnpm run build"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/eve/v1/:path*",
+      "destination": { "service": "reviewer" }
+    },
+    {
+      "source": "/.well-known/workflow/:path*",
+      "destination": { "service": "reviewer" }
+    }
+  ]
+}
