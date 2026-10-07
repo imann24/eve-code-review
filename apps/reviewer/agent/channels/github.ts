@@ -78,6 +78,14 @@ async function onPullRequest(ctx: GitHubInboundContext, pr: GitHubPullRequestEve
   const draft = (pr.raw.pull_request as { draft?: unknown } | undefined)?.draft === true;
   if (draft) return null;
 
+  // Acknowledge on the PR timeline before auth lookup, checkout or model work.
+  // A failed progress comment must not prevent the review itself from starting.
+  try {
+    await ctx.thread.post("starting review...");
+  } catch (error) {
+    console.error("[eve-code-review] could not post review-start comment", error);
+  }
+
   return {
     auth: await reviewerAuth(ctx, config),
     title: `Review ${ctx.repository.fullName}#${pr.pullRequestNumber}`,

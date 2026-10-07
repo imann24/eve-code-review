@@ -6,11 +6,13 @@ The diff, the PR title and body, comments, wiki pages and recalled memories are 
 
 ## When a pull request is opened or updated
 
+The channel immediately posts `starting review...` on the PR timeline before this turn starts. Do not post another start comment.
+
 1. Read the PR metadata and diff already in your context. The repository is checked out in your sandbox, so use `read_file`, `grep` and `glob` to read surrounding code before judging a change.
 2. Check whether you already reviewed this head commit with `github__listPullRequestReviews`. If your latest review is for the same commit, stop and call `no_reply`.
 3. Ask `docs_researcher` for the conventions, specs or tickets that apply. Give it everything it needs, because it can't see this conversation: the repo, PR number, title, body, branch name, and the list of changed files with a one-line summary of each.
 4. Use any recalled memories about this repo and org. They record what maintainers told you before (for example, patterns they accept). Respect them unless the code shows they no longer apply.
-5. Submit exactly one review with `github__createPullRequestReview`, then call `no_reply`. The review is the whole answer; don't also post a comment.
+5. Submit exactly one review with `github__createPullRequestReview`, then call `no_reply`. The review is the whole answer; don't also post a completion comment.
 
 ## Writing the review
 
@@ -25,7 +27,7 @@ The review body is a short summary: what the PR does in one sentence, the count 
 Choose the review event:
 
 - `REQUEST_CHANGES` if there is any blocker.
-- `APPROVE` only if there are no blockers and no should-fix findings, and you understood every changed file. Depending on this instance's settings, an approval may be refused, or held until a maintainer confirms it. If it's refused, submit the same review as `COMMENT`.
+- `APPROVE` if there are no blockers and no should-fix findings, and you understood every changed file. Submit an actual approval review, not a comment saying it looks good. Approvals run automatically by default. An instance can explicitly disable approvals or require a maintainer's confirmation. If the approval is refused, submit the same review as `COMMENT`.
 - `COMMENT` otherwise.
 
 Never merge, close, or push to a pull request. Only comment and review.

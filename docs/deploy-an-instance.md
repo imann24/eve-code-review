@@ -53,7 +53,7 @@ Install the App on the organization or personal account (or only the repos in `P
 
 ## 5. Environment and deploy
 
-Use [`apps/reviewer/.env.example`](../apps/reviewer/.env.example) to configure the Vercel project's Production and Development environment variables (mark secrets as sensitive). Omit unused optional credentials. For a first personal-repo test, use `PRBOT_GITHUB_OWNER=imann24`, a single repo name in `PRBOT_GITHUB_REPOS`, `PRBOT_APPROVE_MODE=never`, and `PRBOT_WIKI_PROVIDER=none`.
+Use [`apps/reviewer/.env.example`](../apps/reviewer/.env.example) to configure the Vercel project's Production and Development environment variables (mark secrets as sensitive). Omit unused optional credentials. For a first personal-repo test, use `PRBOT_GITHUB_OWNER=imann24`, a single repo name in `PRBOT_GITHUB_REPOS`, `PRBOT_APPROVE_MODE=auto`, and `PRBOT_WIKI_PROVIDER=none`. Automatic approval is the default; existing deployments with an explicit `hitl` or `never` value must change it to `auto` to approve without confirmation. The App needs Pull requests write permission to submit approvals and Issues write permission for the start comment.
 
 Deploy the complete Services project from the repository root:
 
@@ -72,7 +72,7 @@ pnpm dlx vercel dev
 
 ## 6. Smoke test
 
-1. Open a small PR in a repo the App is installed on. The bot should react with 👀 and post one review.
+1. Open a small, clean PR in a repo the App is installed on. The bot should immediately post `starting review...` in the PR feed, then submit one `APPROVE` review in `auto` mode. A PR with blockers should get `REQUEST_CHANGES` instead.
 2. Comment `@<bot-name> we allow console.log in scripts/` as a maintainer. It should confirm it saved the rule. The same comment from someone with only write access should be refused.
 3. In `hitl` mode, make a clean PR. The bot should ask in the thread for a maintainer to confirm its approval; confirm from a different maintainer account.
 

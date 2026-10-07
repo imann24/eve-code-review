@@ -48,7 +48,7 @@ export const InstanceEnvSchema = z
       .regex(/^[A-Za-z0-9][A-Za-z0-9-]*$/, "use the GitHub App slug, without the leading @"),
 
     /** never: the bot cannot approve · hitl: a maintainer confirms each approval · auto: no human gate. */
-    PRBOT_APPROVE_MODE: z.enum(["never", "hitl", "auto"]).default("hitl"),
+    PRBOT_APPROVE_MODE: z.enum(["never", "hitl", "auto"]).default("auto"),
     /** GitHub repository roles that count as maintainers (memory writes, approval confirmations). */
     PRBOT_MAINTAINER_ROLES: nonEmptyCsv.default(["maintain", "admin"]),
 

@@ -8,10 +8,10 @@ It's designed to be deployed many times, once per GitHub org or repo, with each 
 
 ## What it does
 
-- **Reviews PRs** when they're opened, reopened, marked ready, or pushed to. One review per head commit, with inline comments tagged `blocker` / `should-fix` / `nit`.
+- **Reviews PRs** when they're opened, reopened, marked ready, or pushed to. Immediately posts `starting review...` on the PR timeline, then one review per head commit, with inline comments tagged `blocker` / `should-fix` / `nit`.
 - **Reads your docs.** A docs-researcher subagent finds the Linear issue or spec a PR implements and the team conventions for the code it touches, and the review cites them.
 - **Learns from maintainers.** Mention the bot with feedback ("we allow raw SQL in migrations") and it saves the rule for that repo or the whole org. Only people with `maintain` or `admin` on the repo can teach it.
-- **Approves only on your terms.** Per instance: never approve, approve only after a maintainer confirms in the PR thread, or approve automatically.
+- **Approves clean PRs automatically** by default. Per instance, you can instead require a maintainer's confirmation in the PR thread or disable approvals.
 
 ## How it's built
 

@@ -20,7 +20,7 @@ describe("parseInstanceConfig", () => {
       toolsConnector: "github/prbot-acme",
       botName: "acme-reviewer",
     });
-    expect(config.review.approveMode).toBe("hitl");
+    expect(config.review.approveMode).toBe("auto");
     expect(config.maintainers.roles).toEqual(["maintain", "admin"]);
     expect(config.memory).toEqual({ backend: "agentkit", orgSlot: true, namespace: "prbot:acme" });
     expect(config.wiki).toEqual({ provider: "none" });

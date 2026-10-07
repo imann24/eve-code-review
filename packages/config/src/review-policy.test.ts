@@ -3,7 +3,7 @@ import { AUTH_ATTRIBUTES } from "./auth-attributes.js";
 import { parseInstanceConfig } from "./config.js";
 import { approvalResponseDecision, reviewApprovalStatus } from "./review-policy.js";
 
-const configWith = (mode: "never" | "hitl" | "auto") =>
+const configWith = (mode?: "never" | "hitl" | "auto") =>
   parseInstanceConfig({
     PRBOT_INSTANCE_ID: "acme",
     PRBOT_GITHUB_OWNER: "acme",
@@ -20,6 +20,10 @@ const person = (login: string, role: string, instanceId = "acme") => ({
 });
 
 describe("reviewApprovalStatus", () => {
+  it("allows APPROVE without human confirmation by default", () => {
+    expect(reviewApprovalStatus(configWith(), { event: "APPROVE" })).toBe("not-applicable");
+  });
+
   it("never gates COMMENT or REQUEST_CHANGES", () => {
     for (const mode of ["never", "hitl", "auto"] as const) {
       expect(reviewApprovalStatus(configWith(mode), { event: "COMMENT" })).toBe("not-applicable");
