@@ -1,0 +1,21 @@
+{
+  "name": "eve-code-review-monorepo",
+  "private": true,
+  "description": "A multi-instance PR review agent built on Vercel's eve framework.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.18.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "pnpm --filter \"./packages/*\" -r build",
+    "typecheck": "pnpm build && pnpm -r typecheck",
+    "test": "vitest run",
+    "dev": "pnpm --filter eve-code-review dev"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

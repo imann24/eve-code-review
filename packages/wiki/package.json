@@ -1,0 +1,29 @@
+{
+  "name": "@eve-code-review/wiki",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Wiki plugins (Linear, Confluence) for eve-code-review's docs researcher.",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@eve-code-review/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "eve": ">=0.71.3 <0.72.0"
+  },
+  "devDependencies": {
+    "eve": "0.71.3",
+    "ai": "^7.0.0",
+    "zod": "^4.1.0"
+  }
+}

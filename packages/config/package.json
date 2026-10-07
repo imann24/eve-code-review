@@ -1,0 +1,35 @@
+{
+  "name": "@eve-code-review/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Per-instance configuration for eve-code-review. Fails closed when anything is missing.",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.1.0"
+  },
+  "peerDependencies": {
+    "eve": ">=0.71.3 <0.72.0"
+  },
+  "peerDependenciesMeta": {
+    "eve": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "eve": "0.71.3",
+    "ai": "^7.0.0"
+  }
+}

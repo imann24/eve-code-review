@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.eve/
+.vercel/
+.next/
+*.tsbuildinfo
+coverage/
+
+# Secrets: every instance keeps its own env in its Vercel project.
+.env
+.env.*
+!.env.example
+.output/
+.nitro/

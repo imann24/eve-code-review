@@ -1,0 +1,38 @@
+{
+  "name": "eve-code-review",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The eve agent: reviews pull requests for one instance (an org or a repo).",
+  "imports": {
+    "#*": "./agent/*",
+    "#evals/*": "./evals/*"
+  },
+  "scripts": {
+    "build": "pnpm -w run build && eve build",
+    "deploy": "eve deploy",
+    "dev": "pnpm -w run build && eve dev",
+    "eval": "eve eval",
+    "start": "eve start",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@eve-code-review/config": "workspace:*",
+    "@eve-code-review/memory": "workspace:*",
+    "@eve-code-review/wiki": "workspace:*",
+    "@github-tools/eve-extension": "^0.8.0",
+    "@upstash/agentkit-eve": "^0.15.1",
+    "@upstash/redis": "^1.38.4",
+    "@vercel/connect": "^2.4.1",
+    "ai": "^7.0.128",
+    "eve": "0.71.3",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}
